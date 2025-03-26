@@ -1,0 +1,72 @@
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ${MINIO_DATA_PATH}:/data
+    command: server /data --console-address ":9001"
+
+
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    restart: always
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_CORES=4
+      - SPARK_MASTER_MEMORY=4g
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - spark_data:/opt/spark/work-dir
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+
+
+  spark-worker:
+    image: bitnami/spark:latest
+    container_name: spark-worker
+    restart: always
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_WORKER_CORES=4
+      - SPARK_WORKER_MEMORY=4g
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - spark_data:/opt/spark/work-dir
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+
+
+  ingestion-raw:
+    build:
+      context: ./apps/app_ingest
+      dockerfile: Dockerfile
+    container_name: app-ingest
+    depends_on:
+      - spark-master
+      - minio
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    volumes:
+      - spark_data:/opt/spark/work-dir
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+
+
+volumes:
+  minio_data:
+  spark_data:

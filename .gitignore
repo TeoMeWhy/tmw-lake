@@ -1,0 +1,8 @@
+# env files
+*.env
+
+# spark files
+spark-defaults.conf
+
+# minio files
+minio_data/
