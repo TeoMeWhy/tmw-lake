@@ -1,3 +1,6 @@
+# nohup
+nohup.out
+
 # env files
 *.env
 
@@ -6,3 +9,10 @@ spark-defaults.conf
 
 # minio files
 minio_data/
+
+# prefect filtes
+prefect_data/
+
+# python
+*.pyc
+__pycache__

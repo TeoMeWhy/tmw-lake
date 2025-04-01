@@ -1,0 +1,3 @@
+prefect==3.2.14
+prefect-docker==0.6.2
+prefect-shell==0.3.1
