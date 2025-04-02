@@ -96,16 +96,17 @@ services:
       context: images/executer
       dockerfile: Dockerfile
     container_name: executer
+    env_file:
+      - .env
+    working_dir: /app
+    volumes:
+      - ./orchestration:/app
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     depends_on:
       - prefect-server
       - prefect-worker-01
       - spark-master
       - spark-worker
-    working_dir: /app
-    volumes:
-      - ./orchestration:/app
-      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
-
     restart: always
     networks:
       - datalake-network
