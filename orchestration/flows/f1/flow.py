@@ -3,16 +3,18 @@ from prefect_shell import ShellOperation
 
 
 @task
-def run():
-    cmd = "docker exec executer python flows/raw/f1/get_sessions.py"
+def run(step:str):
+    cmd = f"docker exec executer python flows/f1/{step}.py"
     op = ShellOperation(commands=[cmd],stream_output=True)
     result = op.run()
     return result
 
 
-@flow
+@flow(name="Ingestão F1")
 def ingestao_flow():
-    run()
+    run(step="raw_sessions")
+    run(step="bronze_sessions")
+
 
 if __name__ == "__main__":
     ingestao_flow()

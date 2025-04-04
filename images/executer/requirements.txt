@@ -5,3 +5,5 @@ prefect-docker==0.6.2
 prefect-shell==0.3.1
 requests==2.32.3
 boto3==1.37.25
+fastf1==3.5.3
+tqdm==4.66.5

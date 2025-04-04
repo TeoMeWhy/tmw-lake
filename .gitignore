@@ -13,6 +13,9 @@ minio_data/
 # prefect filtes
 prefect_data/
 
+# f1 cache files
+.fastf1
+
 # python
 *.pyc
 __pycache__

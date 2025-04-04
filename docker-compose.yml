@@ -102,6 +102,7 @@ services:
     volumes:
       - ./orchestration:/app
       - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+      - ./.fastf1:/.fastf1
     depends_on:
       - prefect-server
       - prefect-worker-01

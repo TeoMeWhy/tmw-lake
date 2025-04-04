@@ -1,6 +1,8 @@
 import datetime
 import json
 
+from tqdm import tqdm
+
 
 class RawIngestor:
 
@@ -12,6 +14,7 @@ class RawIngestor:
         pass
 
     def save_data(self, data, **kwargs):
+        print("Saving data to S3...")
         now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f")
         data = json.dumps(data).encode('utf-8')
 
@@ -23,7 +26,7 @@ class RawIngestor:
              .put(Body=data, ContentType='application/json'))
 
     def run(self, values: list[dict]):
-        for v in values:
+        for v in tqdm(values):
             data = self.get_data(**v)
             if len(data) == 0:
                 continue

@@ -1,9 +1,11 @@
 # %%
+import datetime
+import itertools
 import os
 
 import boto3
 from botocore.client import Config
-import requests
+import fastf1
 
 from ingestor import RawIngestor
 
@@ -13,13 +15,19 @@ MINIO_ROOT_PASSWORD = os.getenv("MINIO_ROOT_PASSWORD")
 MINIO_DATA_PATH = os.getenv("MINIO_DATA_PATH")
 
 
-def get_sessions(**kwargs):
-    url = "https://api.openf1.org/v1/sessions"
-    req = requests.get(url, params=kwargs)
-    if req.status_code != 200:
-        return dict()
-    
-    return req.json()
+def get_session(**kwargs):
+    try:
+        fastf1.Cache.set_disabled()
+        session = fastf1.get_session(**kwargs)
+        session.load(telemetry=False, messages=False, laps=False)
+        if session.results.shape[0] == 0:
+            return []
+
+        return session.results.astype(str).to_dict(orient='records')
+
+    except ValueError as e:
+        return []
+        
 
 
 class IngestorSessions(RawIngestor):
@@ -27,7 +35,7 @@ class IngestorSessions(RawIngestor):
         super().__init__(tablename, s3_client)
 
     def get_data(self,**kwargs):
-        return get_sessions(**kwargs)
+        return get_session(**kwargs)
 
 
 def main():
@@ -39,14 +47,17 @@ def main():
         config=Config(signature_version='s3v4'),
     )
 
+
+    gps = list(range(1,31))
+    years = [datetime.datetime.now().year]
+    events = ["Race", "Qualifying", "Sprint"]
+
+    values = list(itertools.product(years, gps, events))
+    values_dict = [{"year": v[0], "gp": v[1], "identifier": v[2]} for v in values]
+
     sessions = IngestorSessions("sessions", s3)
-    sessions.run([
-        {"year": 2023},
-        {"year": 2024},
-        {"year": 2025},
-    ])
+    sessions.run(values_dict)
 
 
 if __name__ == "__main__":
     main()
-
