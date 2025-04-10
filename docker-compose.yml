@@ -95,12 +95,14 @@ services:
     build:
       context: images/executer
       dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
     container_name: executer
     env_file:
       - .env
     working_dir: /app
     volumes:
-      - ./orchestration:/app
+      - ./orchestration:/app/orchestration
       - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
       - ./.fastf1:/.fastf1
     depends_on:

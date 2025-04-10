@@ -16,14 +16,21 @@ MINIO_DATA_PATH = os.getenv("MINIO_DATA_PATH")
 
 
 def get_session(**kwargs):
+    print(kwargs)
     try:
-        fastf1.Cache.set_disabled()
         session = fastf1.get_session(**kwargs)
         session.load(telemetry=False, messages=False, laps=False)
         if session.results.shape[0] == 0:
             return []
 
-        return session.results.astype(str).to_dict(orient='records')
+        results = session.results
+        results["date"] = session.event.EventDate.date()
+        results["country"] = session.event.Country
+        results["location"] = session.event.Location
+        results["dt_now"] = datetime.datetime.now()
+        results["event_name"] = session.name
+
+        return results.astype(str).to_dict(orient='records')
 
     except ValueError as e:
         return []
@@ -47,17 +54,17 @@ def main():
         config=Config(signature_version='s3v4'),
     )
 
-
-    gps = list(range(1,31))
-    years = [datetime.datetime.now().year]
+    gps = list(range(1,25))
+    years = list(range(2025, 2026)) #[datetime.datetime.now().year]
     events = ["Race", "Qualifying", "Sprint"]
 
     values = list(itertools.product(years, gps, events))
     values_dict = [{"year": v[0], "gp": v[1], "identifier": v[2]} for v in values]
 
-    sessions = IngestorSessions("sessions", s3)
+    sessions = IngestorSessions("results", s3)
     sessions.run(values_dict)
 
 
 if __name__ == "__main__":
     main()
+
