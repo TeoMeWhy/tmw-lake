@@ -16,46 +16,6 @@ services:
       - datalake-network
 
 
-  spark-master:
-    image: bitnami/spark:3.5.5
-    container_name: spark-master
-    restart: always
-    ports:
-      - "7077:7077"
-      - "8080:8080"
-    environment:
-      - SPARK_MODE=master
-      - SPARK_MASTER_CORES=4
-      - SPARK_MASTER_MEMORY=4g
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - spark_data:/opt/spark/work-dir
-      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
-    networks:
-      - datalake-network
-
-
-  spark-worker:
-    image: bitnami/spark:3.5.5
-    container_name: spark-worker
-    restart: always
-    depends_on:
-      - spark-master
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_WORKER_CORES=4
-      - SPARK_WORKER_MEMORY=4g
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - spark_data:/opt/spark/work-dir
-      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
-    networks:
-      - datalake-network
-
-
   prefect-server:
     image: prefecthq/prefect:3-latest
     container_name: prefect-server
@@ -86,6 +46,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./orchestration:/app
+      - spark_data:/opt/spark/work-dir
     restart: always
     networks:
       - datalake-network
@@ -108,8 +69,6 @@ services:
     depends_on:
       - prefect-server
       - prefect-worker-01
-      - spark-master
-      - spark-worker
     restart: always
     networks:
       - datalake-network
