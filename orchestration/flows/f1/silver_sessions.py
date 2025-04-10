@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 import os
 
 spark = (SparkSession.builder
-                        .appName("Ingestao RAW")
+                        .appName("Ingestao Silver")
                         .master("local[4]")
                         .getOrCreate())
 
