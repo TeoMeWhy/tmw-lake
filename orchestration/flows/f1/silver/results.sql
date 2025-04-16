@@ -1,20 +1,7 @@
-from pyspark.sql import SparkSession
-import os
-
-spark = (SparkSession.builder
-                        .appName("Ingestao Silver")
-                        .master("local[4]")
-                        .getOrCreate())
-
-
-df = spark.read.format("delta").load("s3a://bronze/f1/results")
-df.createOrReplaceTempView("f1_results")
-
-query = """
-
 WITH renamed AS (
 
     SELECT
+            date(date) || '-' || location || '-' || event_name AS idSession,
             Abbreviation AS descDriverAbreviation,
             DriverId As idDriver,
             DriverNumber AS nrDriver,
@@ -36,14 +23,3 @@ WITH renamed AS (
 )
 
 SELECT * FROM renamed
-"""
-
-(spark.sql(query)
-      .write
-      .format("delta")
-      .mode("overwrite")
-      .option("overwriteSchema", "true")
-      .save("s3a://silver/f1/results")
-)
-
-spark.stop()

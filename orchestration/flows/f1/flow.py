@@ -3,8 +3,8 @@ from prefect_shell import ShellOperation
 
 
 @task
-def run(step:str):
-    cmd = f"docker exec executer python orchestration/flows/f1/{step}.py"
+def run(layer:str, table:str):
+    cmd = f"docker exec executer python orchestration/flows/f1/{layer}/{table}.py"
     op = ShellOperation(commands=[cmd],stream_output=True)
     result = op.run()
     return result
@@ -12,9 +12,11 @@ def run(step:str):
 
 @flow(name="Ingestão F1")
 def ingestao_flow():
-    run(step="raw_sessions")
-    run(step="bronze_sessions")
-    run(step="silver_sessions")
+    # run(layer="raw", table="results")
+    run(layer="bronze", table="results")
+    run(layer="silver", table="results")
+    run(layer="silver", table="sessions")
+    run(layer="silver", table="fs_drivers")
 
 
 if __name__ == "__main__":
