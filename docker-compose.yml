@@ -1,4 +1,18 @@
 services:
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.21.3
+    container_name: mlflow
+    restart: always
+    ports:
+      - "5000:5000"
+    command: "mlflow server --host 0.0.0.0"
+    volumes:
+      - ./mlflow_data:/mlruns
+    networks:
+      - datalake-network
+
+
   minio:
     image: minio/minio
     container_name: minio
@@ -31,6 +45,7 @@ services:
     restart: always
     networks:
       - datalake-network
+
 
   prefect-worker-01:
     build:
@@ -76,6 +91,7 @@ services:
 volumes:
   minio_data:
   spark_data:
+  mlflow_data:
 
 networks:
   datalake-network:

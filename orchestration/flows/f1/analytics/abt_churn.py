@@ -18,7 +18,6 @@ spark.read.format("delta").load("s3a://silver/f1/results").createOrReplaceTempVi
 with open(os.path.join(DIR_PATH, "abt_churn.sql")) as open_file:
     query = open_file.read()
 
-
 (spark.sql(query)
       .write
       .format("delta")

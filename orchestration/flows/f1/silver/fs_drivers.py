@@ -1,5 +1,5 @@
 import os
-
+from tqdm import tqdm
 from pyspark.sql import SparkSession
 
 import orchestration.flows.f1.silver.utils as utils
@@ -32,13 +32,13 @@ values = [i[0] for i in lines]
 
 query = utils.import_query(QUERY_PATH)
 
-for i in values[-3:]:
+for i in tqdm(values[-2:]):
 
     (spark.sql(query.format(date=i))
-        .write
-        .format("delta")
-        .mode("overwrite")
-        .option("replaceWhere", f"dtRef = '{i}'")
-        .save("s3a://silver/f1/fs_drivers"))
+          .write
+          .format("delta")
+          .mode("overwrite")
+          .option("replaceWhere", f"dtRef = '{i}'")
+          .save("s3a://silver/f1/fs_drivers"))
 
 spark.stop()

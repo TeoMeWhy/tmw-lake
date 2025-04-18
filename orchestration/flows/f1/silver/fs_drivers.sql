@@ -6,7 +6,6 @@ WITH tb_sessions_results AS (
 ),
 
 tb_sessions AS (
-
     SELECT *,
             ROW_NUMBER() OVER (PARTITION BY 1 ORDER by dtSession DESC) as rnAllSession
     FROM sessions
@@ -16,6 +15,7 @@ tb_sessions AS (
 
 tb_race AS (
     SELECT t1.idDriver,
+           t1.idTeam,
            COALESCE( CASE
                            WHEN t1.nrGridPosition == 0 THEN t1.nrPosition
                            ELSE t1.nrGridPosition
@@ -36,7 +36,7 @@ tb_race AS (
            ROW_NUMBER() OVER (PARTITION BY t1.idDriver ORDER BY t1.dtSession DESC) AS nrSessionDesc,
            ROW_NUMBER() OVER (PARTITION BY t1.idDriver ORDER BY t1.dtSession ASC) AS nrSessionAsc,
            t2.rnAllSession
-           
+
     FROM tb_sessions_results AS t1
 
     LEFT JOIN tb_sessions As t2
@@ -51,6 +51,10 @@ tb_groupbed_life AS (
            '{date}' AS dtRef,
            max(dtSession) AS dtLastSeen,
            min(dtSession) AS dtFirstSeen,
+           datediff(max(dtSession), min(dtSession)) AS dtIntervalMaxMin,
+           count(distinct dtSession) AS qtRaces,
+           count(distinct idTeam) AS qtTeams,
+           split_part(MIN(CASE WHEN idTeam IS NOT NULL THEN rnAllSession || '+' || idTeam END), '+', 2) as idTeam,
            min(rnAllSession) - 1 AS qtLastSeenRace,
            avg(nrGridPosition) AS avgGridPosition,
            percentile(nrGridPosition, 0.5) AS medianGridPosition,
@@ -98,7 +102,7 @@ tb_groupbed_races_last_20 AS (
            percentile(nrPositionLift, 0.5) AS medianPositionLiftRaceLast20,
            avg(flPolePosition) AS pctPolePosititionRaceLast20,
            avg(flPoleWin) AS pctPolewinRaceLast20
-    
+
     FROM tb_race
     WHERE nrSessionDesc <= 20
     GROUP BY ALL

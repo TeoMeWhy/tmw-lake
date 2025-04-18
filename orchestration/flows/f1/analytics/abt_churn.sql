@@ -7,7 +7,7 @@ tb_dtref_races (
     SELECT DISTINCT dtSession
     FROM results
     WHERE descSession = 'Race'
-)
+),
 
 tb_abt AS (
 
@@ -25,7 +25,6 @@ tb_abt AS (
     AND t1.dtRef IN (SELECT dtSession FROM tb_dtref_races)
 
     ORDER BY dtRef DESC, idDriver
-
 )
 
-SELECT * tb_abt
+SELECT * FROM tb_abt

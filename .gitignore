@@ -4,8 +4,11 @@ nohup.out
 # env files
 *.env
 
-# spark files
-spark-defaults.conf
+# f1 cache files
+.fastf1
+
+# mlflow files
+mlflow_data/
 
 # minio files
 minio_data/
@@ -13,9 +16,10 @@ minio_data/
 # prefect filtes
 prefect_data/
 
-# f1 cache files
-.fastf1
-
 # python
 *.pyc
 __pycache__
+
+# spark files
+spark-defaults.conf
+
