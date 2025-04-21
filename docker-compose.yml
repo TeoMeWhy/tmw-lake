@@ -88,6 +88,19 @@ services:
     networks:
       - datalake-network
 
+  app:
+    build:
+      context: app/
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    container_name: app
+    volumes:
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+    restart: always
+    networks:
+      - datalake-network
+
 volumes:
   minio_data:
   spark_data:
