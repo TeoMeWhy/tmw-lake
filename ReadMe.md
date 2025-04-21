@@ -23,7 +23,7 @@ Assim, para colocar o ambiente todo de pé, ja com com os pipelines criados para
 ```bash
 git clone https://github.com/TeoMeWhy/tmw-lake.git
 cd tmw-lake
-make
+make run
 ```
 
 Garanta as seguintes variáveis ambiente estejam definidas. Você pode usar um arquivos `.env` na raiz do projeto caso prefira, assim os arquivos `makefile` e `docker-compose` utilizarão este arquivos para caregá-las.

@@ -6,8 +6,8 @@ NETWORK_NAME=datalake-network
 include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
 
-.PHONY: all
-all: up deploy-flows
+.PHONY: run
+run: up deploy-flows
 
 
 .PHONY: create-network
