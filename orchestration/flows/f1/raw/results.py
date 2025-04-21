@@ -36,7 +36,6 @@ def get_session(**kwargs):
         return []
         
 
-
 class IngestorSessions(RawIngestor):
     def __init__(self, tablename, s3_client):
         super().__init__(tablename, s3_client)
@@ -67,4 +66,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
