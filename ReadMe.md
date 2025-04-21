@@ -102,6 +102,13 @@ Já os `workers`, são containers separado que realizam efetivamente as tarefas 
 
 ### App
 
+
 É a solução na ponta. Isto é, a nossa aplicação web com interface para usuário final. No nosso case de Fórmula 1, temos uma aplicação em Streamlit fornecendo uma interface Web para iteração do usuário.
+
+<img src="app.jpeg" width=700>
+
+Nessa aplicação, podemos selecionar o modelo treinado, para assim, comparar os diversos pilotos ao longo do tempo. Também é possível inspecionar o modelo selecionado ao clicar no botão "Detalhes do modelo", onde encaminhamos o usuário para conferir os detalhes modelo registrado no `MLFlow`, como seus `inputs` e métricas.
+
+Além disso, o usuário pode escolher como deseja exibir os dados ods pilotos, considerando a ordenação (crescente ou decrescente), ou até mesmo os pilotos que desejar, ao desabilitar a opção "Top N".
 
 Em alguns outros casos, poderíamos instanciar uma ferramenta de BI pra visualização de dados.
