@@ -20,12 +20,12 @@ with cols[0]:
     st.link_button("Detalhes do modelo", model_mlflow, help=text)
 
 with cols[1]:
-    top = st.toggle("Top 10", value=True)
+    top = st.toggle("Top N", value=True)
 
 with cols[2]:
     if top:
         sorted = data[data["dtRef"]==data["dtRef"].max()].sort_values("pctProbaChurn", ascending=False)
-        n = st.slider("Número de registros", 1, sorted["idDriver"].nunique(), 5)
+        n = st.slider("Quantidade de Pilotos (N)", 1, sorted["idDriver"].nunique(), 5)
         reverse = st.toggle("Reverse", value=False)
         if reverse:
             drivers = sorted.tail(n)['idDriver'].unique()
@@ -37,8 +37,12 @@ with cols[2]:
 filters = data["nrModelVersion"] == model
 filters *= data["idDriver"].isin(drivers)
 
-data_show = data[filters]
-st.line_chart(data_show, x="dtRef", y="pctProbaChurn", color="idDriver")
+data_show = data[filters].rename(columns={"dtRef": "Data",
+                                          "pctProbaChurn": "Probabilidade Churn",
+                                          "idDriver": "Piloto",
+                                          })
 
+
+plot = st.line_chart(data_show, x="Data", y="Probabilidade Churn", color="Piloto")
 
 st.dataframe(data_show)
