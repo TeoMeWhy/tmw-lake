@@ -19,7 +19,7 @@ def connect_spark():
 def get_predictions(_spark):
     return (_spark.read
                  .format("delta")
-                 .load("s3a://silver/f1/model_churn")
+                 .load("s3a://analytics/f1/model_churn")
                  .toPandas())
     
     
