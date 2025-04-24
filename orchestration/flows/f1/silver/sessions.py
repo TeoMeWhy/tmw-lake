@@ -1,6 +1,7 @@
 import os
 
 from pyspark.sql import SparkSession
+import delta
 
 import orchestration.flows.f1.silver.utils as utils
 
@@ -23,11 +24,15 @@ df.createOrReplaceTempView("results")
 query = utils.import_query(QUERY_PATH)
 
 (spark.sql(query)
+      .coalesce(1)
       .write
       .format("delta")
       .mode("overwrite")
       .option("overwriteSchema", "true")
       .save("s3a://silver/f1/sessions")
 )
+
+table = delta.DeltaTable.forPath(spark, "s3a://silver/f1/sessions")
+table.vacuum()
 
 spark.stop()

@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-import os
+import delta
 
 spark = (SparkSession.builder
                         .appName("Ingestao Bronze")
@@ -33,11 +33,16 @@ SELECT * FROM updated
 """
 
 (spark.sql(query)
+      .coalesce(1)
       .write
       .format("delta")
       .mode("overwrite")
       .option("overwriteSchema", "true")
       .save("s3a://bronze/f1/results")
 )
+
+
+table = delta.DeltaTable.forPath(spark, "s3a://bronze/f1/results")
+table.vacuum()
 
 spark.stop()

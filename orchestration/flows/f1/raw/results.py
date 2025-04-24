@@ -54,8 +54,12 @@ def main():
     )
 
     gps = list(range(1,25))
-    years = list(range(2025, 2026)) #[datetime.datetime.now().year]
-    events = ["Race", "Qualifying", "Sprint"]
+    years = [datetime.datetime.now().year]
+    events = [
+        "Race",
+        "Qualifying",
+        "Sprint",
+        ]
 
     values = list(itertools.product(years, gps, events))
     values_dict = [{"year": v[0], "gp": v[1], "identifier": v[2]} for v in values]

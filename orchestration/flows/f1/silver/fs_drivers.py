@@ -1,6 +1,7 @@
 import os
 from tqdm import tqdm
 from pyspark.sql import SparkSession
+import delta
 
 import orchestration.flows.f1.silver.utils as utils
 
@@ -35,10 +36,17 @@ query = utils.import_query(QUERY_PATH)
 for i in tqdm(values[-2:]):
 
     (spark.sql(query.format(date=i))
+          .coalesce(1)
           .write
+          .partitionBy("dtRef")
           .format("delta")
           .mode("overwrite")
           .option("replaceWhere", f"dtRef = '{i}'")
-          .save("s3a://silver/f1/fs_drivers"))
+          .save("s3a://silver/f1/fs_drivers")
+    )
+
+
+table = delta.DeltaTable.forPath(spark, "s3a://silver/f1/fs_drivers")
+table.vacuum()
 
 spark.stop()
