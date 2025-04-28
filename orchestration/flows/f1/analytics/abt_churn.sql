@@ -1,3 +1,4 @@
+
 WITH driver_season AS (
     SELECT DISTINCT idDriver, YEAR(dtsession) AS yearSeason
     FROM results
@@ -31,9 +32,11 @@ tb_abt AS (
     AND NOT(
         t1.qtLastSeenRace = 1 AND t3.rnSessionYear = 1
     )
+    AND qtRaces > 2
     
 
     ORDER BY dtRef DESC, idDriver
 )
 
 SELECT * FROM tb_abt
+ORDER BY idDriver, dtRef DESC

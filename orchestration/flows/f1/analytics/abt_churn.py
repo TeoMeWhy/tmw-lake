@@ -1,3 +1,5 @@
+# %%
+
 import os
 
 from pyspark.sql import SparkSession
@@ -12,6 +14,7 @@ spark = (SparkSession.builder
                      .master("local[4]")
                      .getOrCreate())
 
+# %%
 
 spark.read.format("delta").load("s3a://silver/f1/fs_drivers").createOrReplaceTempView("fs_drivers")
 spark.read.format("delta").load("s3a://silver/f1/results").createOrReplaceTempView("results")
