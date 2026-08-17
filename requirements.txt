@@ -1,0 +1,8 @@
+pyspark==3.5.1
+delta-spark==3.2.0
+pandas
+ipykernel
+findspark
+python-dotenv
+rich
+schedule==1.2.2

@@ -1,0 +1,9 @@
+services:
+  pipeline-execution:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data

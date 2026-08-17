@@ -1,0 +1,87 @@
+[
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "courses"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "courses_ep_complete"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "courses_eps"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "role_skills"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "skill"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "tmw_users"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "user_rewards"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "user_skills"
+  },
+  {
+    "layer": "bronze",
+    "database": "education",
+    "table": "users"
+  },
+  {
+    "layer": "bronze",
+    "database": "points",
+    "table": "customers"
+  },
+  {
+    "layer": "bronze",
+    "database": "points",
+    "table": "products"
+  },
+  {
+    "layer": "bronze",
+    "database": "points",
+    "table": "transaction_products"
+  },
+  {
+    "layer": "bronze",
+    "database": "points",
+    "table": "transactions"
+  },
+  {
+    "layer": "silver",
+    "database": "tmw_crm",
+    "table": "life_cycle"
+  },
+  {
+    "layer": "silver",
+    "database": "tmw_fs",
+    "table": "fs_education"
+  },
+  {
+    "layer": "silver",
+    "database": "tmw_fs",
+    "table": "fs_transactions"
+  },
+  {
+    "layer": "silver",
+    "database": "tmw_fs",
+    "table": "fs_life_cycle"
+  }
+]
