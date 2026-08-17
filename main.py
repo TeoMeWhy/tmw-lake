@@ -58,11 +58,11 @@ def mysql_to_bronze(spark, database, tablename):
     }
 
     df_mysql = (spark.read
-                    .format("jdbc")
-                    .option("url", jdbc_url)
-                    .option("dbtable", tablename)
-                    .options(**db_properties)
-                    .load())
+                     .format("jdbc")
+                     .option("url", jdbc_url)
+                     .option("dbtable", tablename)
+                     .options(**db_properties)
+                     .load())
 
     (df_mysql.coalesce(1)
              .write
@@ -99,7 +99,6 @@ def process_table_by_query(spark, query_name, layer, database, date_start, date_
     deltatable.vacuum(retentionHours=24)
 
 
-
 def lake_to_sql(spark, query_name, database, table,):
     setup_tables(spark)
     
@@ -112,16 +111,16 @@ def lake_to_sql(spark, query_name, database, table,):
     }
     
     query = import_query(f"exporter/{query_name}.sql")
-    df = spark.sql(query)
 
-    (df.write
-    .format("jdbc")
-    .option("url", jdbc_url)
-    .option("dbtable", table)
-    .options(**db_properties)
-    .option("truncate", "true")
-    .mode("overwrite")
-    .save())
+    (spark.sql(query)
+          .write
+          .format("jdbc")
+          .option("url", jdbc_url)
+          .option("dbtable", table)
+          .options(**db_properties)
+          .option("truncate", "true")
+          .mode("overwrite")
+          .save())
 
 
 def run_bronze(spark, tables):
@@ -137,9 +136,8 @@ def run_silver(spark, tables):
     setup_tables(spark)
     for i in track(tables, "Processando tabelas silver..."):
         if i['layer'] == 'silver':
-            process_table_by_query(spark, i['table'], i['layer'], i['database'], past.strftime("%Y-%m-%d"), now.strftime("%Y-%m-%d"))
+            process_table_by_query(spark,i['table'],i['layer'],i['database'],past.strftime("%Y-%m-%d"),now.strftime("%Y-%m-%d"))
         
-
 # %%
 
 builder = (SparkSession.builder
