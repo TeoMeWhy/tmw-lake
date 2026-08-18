@@ -97,6 +97,8 @@ def process_table_by_query(spark, query_name, layer, database, date_start, date_
 
     deltatable = DeltaTable.forPath(spark, f"./data/{layer}/{database}/{query_name}")
     deltatable.vacuum(retentionHours=24)
+    del deltatable
+    gc.collect()
 
 
 def lake_to_sql(spark, query_name, database, table,):
@@ -159,4 +161,6 @@ schedule.every().hour.at(":30").do(lake_to_sql,spark=spark,query_name="fs_all",d
 
 while True:
     schedule.run_pending()
+    gc.collect()
+    spark.sparkContext._jvm.System.gc()
     time.sleep(1)
