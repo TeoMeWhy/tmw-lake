@@ -155,9 +155,9 @@ builder = (SparkSession.builder
 
 spark = (configure_spark_with_delta_pip(builder,extra_packages=["com.mysql:mysql-connector-j:8.3.0"]).getOrCreate())
 
-schedule.every().hour.at(":00").do(run_bronze,spark=spark,tables=tables)
-schedule.every().hour.at(":15").do(run_silver,spark=spark,tables=tables)
-schedule.every().hour.at(":30").do(lake_to_sql,spark=spark,query_name="fs_all",database="feature_store",table="tmw_user")
+schedule.every(4).hour.at(":00").do(run_bronze,spark=spark,tables=tables)
+schedule.every(4).hour.at(":15").do(run_silver,spark=spark,tables=tables)
+schedule.every(4).hour.at(":30").do(lake_to_sql,spark=spark,query_name="fs_all",database="feature_store",table="tmw_user")
 
 while True:
     schedule.run_pending()
