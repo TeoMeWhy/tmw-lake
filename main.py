@@ -144,7 +144,7 @@ def run_silver(spark, tables):
 
 builder = (SparkSession.builder
                        .appName("TMW-Lake-Test")
-                       .master("local[2]")
+                       .master("local[4]")
                        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
                        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
                        .config("spark.sql.warehouse.dir", "spark-warehouse")
@@ -156,8 +156,8 @@ builder = (SparkSession.builder
 spark = (configure_spark_with_delta_pip(builder,extra_packages=["com.mysql:mysql-connector-j:8.3.0"]).getOrCreate())
 
 schedule.every(4).hours.at(":00").do(run_bronze,spark=spark,tables=tables)
-schedule.every(4).hours.at(":15").do(run_silver,spark=spark,tables=tables)
-schedule.every(4).hours.at(":30").do(lake_to_sql,spark=spark,query_name="fs_all",database="feature_store",table="tmw_user")
+schedule.every(4).hours.at(":20").do(run_silver,spark=spark,tables=tables)
+schedule.every(4).hours.at(":20").do(lake_to_sql,spark=spark,query_name="fs_all",database="feature_store",table="tmw_user")
 
 while True:
     schedule.run_pending()
